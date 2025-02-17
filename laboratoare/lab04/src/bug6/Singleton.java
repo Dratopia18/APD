@@ -15,7 +15,7 @@ public class Singleton {
 
     }
 
-    public static Singleton getInstance() {
+    public static synchronized Singleton getInstance() {
         if (instance == null) {
             System.out.println("Creating only one instance");
             instance = new Singleton();

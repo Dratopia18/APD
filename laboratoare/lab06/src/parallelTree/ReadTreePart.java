@@ -9,30 +9,32 @@ import java.util.concurrent.CyclicBarrier;
 public class ReadTreePart implements Runnable {
 	TreeNode tree;
 	String fileName;
+	CyclicBarrier barrier;
 
-	public ReadTreePart(TreeNode tree, String fileName) {
+	public ReadTreePart(TreeNode tree, String fileName, CyclicBarrier barrier) {
 		this.tree = tree;
 		this.fileName = fileName;
+		this.barrier = barrier;
 	}
 
 	@Override
 	public void run() {
 		try {
 			Scanner scanner = new Scanner(new File(fileName));
-			TreeNode treeNode;
-
 			while (scanner.hasNextInt()) {
 				int child = scanner.nextInt();
 				int root = scanner.nextInt();
 
-				treeNode = tree.getNode(root);
-				while (treeNode == null) {
-					treeNode = tree.getNode(root);
+				TreeNode treeNode = tree.getNode(root);
+				synchronized (treeNode) {
+					while (treeNode == null) {
+						treeNode = tree.getNode(root);
+					}
+					treeNode.addChild(new TreeNode(child));
 				}
-
-				treeNode.addChild(new TreeNode(child));
 			}
-		} catch (FileNotFoundException e) {
+			barrier.await();
+		} catch (FileNotFoundException | InterruptedException | BrokenBarrierException e) {
 			e.printStackTrace();
 		}
 	}

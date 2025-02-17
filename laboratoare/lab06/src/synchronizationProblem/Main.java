@@ -12,7 +12,7 @@ public class Main {
 		System.out.println("Synchronization problem. Do not solve me with locks");		
 		
 		for (int j = 0; j < N_ITERATIONS; j++) {
-			MyThread.value = 0;
+			MyThread.value = new AtomicInteger(0);
 			for (int i = 0; i < 2; i++) {
 				threads[i] = new Thread(new MyThread(i));
 				threads[i].start();
@@ -24,7 +24,7 @@ public class Main {
 					e.printStackTrace();
 				}
 			}
-			if (MyThread.value != 2 * 3 * N) {
+			if (MyThread.value.get() != 2 * 3 * N) {
 				System.out.println("i was different than " + 2 * 3 * N + ", it is " + MyThread.value);
 				sw = false;
 			}

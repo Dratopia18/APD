@@ -20,9 +20,13 @@ public class Reader extends Thread {
         this.start_time = System.currentTimeMillis() / 1000.0;
 
         for (int i = 0; i < number_of_reads; i++) {
-            // TODO: add the synchronization
-            read();
-
+            try {
+                shared_vars.startRead();
+                read();
+                shared_vars.endRead();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         this.completion_time = System.currentTimeMillis() / 1000.0 - this.start_time;

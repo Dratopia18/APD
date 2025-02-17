@@ -1,5 +1,6 @@
 package philosophersProblem;
 
+import java.util.concurrent.locks.Lock;
 public class Philosopher implements Runnable {
     private final Object leftFork;
     private final Object rightFork;
@@ -19,12 +20,30 @@ public class Philosopher implements Runnable {
         }
     }
 
+    public void eat() {
+        System.out.println("Philosopher " + id + " is eating");
+        sleep();
+    }
+
+    public void think() {
+        System.out.println("Philosopher " + id + " is thinking");
+        sleep();
+    }
+
     @Override
     public void run() {
-        synchronized (leftFork) {
-            sleep(); // delay added to make sure the dead-lock is visible
+        think();
+        if (id % 2 == 0) {
+            synchronized (leftFork) {
+                synchronized (rightFork) {
+                    eat();
+                }
+            }
+        } else {
             synchronized (rightFork) {
-                System.out.println("Philosopher " + id + " is eating");
+                synchronized (leftFork) {
+                    eat();
+                }
             }
         }
     }

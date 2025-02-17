@@ -1,14 +1,43 @@
 package readersWriters.conditionedSynchronization;
 
+import java.util.concurrent.Semaphore;
+
 public class ReaderWriterSharedVars {
-    // The value to read/write
     volatile int shared_value;
-    // TODO: Add semaphores and anything else needed for synchronization
-    // Semaphore s;
+    Semaphore mutex;
+    Semaphore rw_mutex;
+    int readers;
 
     ReaderWriterSharedVars(int init_shared_value) {
         this.shared_value = init_shared_value;
-        //this.s = new Semaphore(1);
+        this.mutex = new Semaphore(1);
+        this.rw_mutex = new Semaphore(1);
+        this.readers = 0;
     }
 
+    public void startRead() throws InterruptedException {
+        mutex.acquire();
+        readers++;
+        if (readers == 1) {
+            rw_mutex.acquire();
+        }
+        mutex.release();
+    }
+
+    public void endRead() throws InterruptedException {
+        mutex.acquire();
+        readers--;
+        if (readers == 0) {
+            rw_mutex.release();
+        }
+        mutex.release();
+    }
+
+    public void startWrite() throws InterruptedException {
+        rw_mutex.acquire();
+    }
+
+    public void endWrite() {
+        rw_mutex.release();
+    }
 }

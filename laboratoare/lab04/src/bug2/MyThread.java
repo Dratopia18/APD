@@ -5,6 +5,8 @@ package bug2;
  *
  * There is nothing to modify for this example. Just explain why we do NOT
  * have a deadlock.
+ * Because taking the same lock twice by the same thread doesn't
+ * cause a deadlock
  */
 public class MyThread implements Runnable {
     static int i;

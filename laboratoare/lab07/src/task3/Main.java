@@ -1,8 +1,13 @@
 package task3;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
+
 public class Main {
     public static int N = 4;
-
+    static ExecutorService executor = Executors.newFixedThreadPool(4);
+    static AtomicInteger inQueue = new AtomicInteger(0);
     private static boolean check(int[] arr, int step) {
         for (int i = 0; i <= step; i++) {
             for (int j = i + 1; j <= step; j++) {

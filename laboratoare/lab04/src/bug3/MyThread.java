@@ -7,7 +7,7 @@ package bug3;
  * Modify a single line of code to obtain the expected behaviour (race condition since the monitors are different).
  */
 public class MyThread implements Runnable {
-    static final String a = "LOCK";
+    static final String a = "LOCK1";
     static final String b = "LOCK";
     int id;
     static int value = 0;

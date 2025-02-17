@@ -20,8 +20,13 @@ public class Writer extends Thread {
         this.start_time = System.currentTimeMillis() / 1000.0;
 
         for (int i = 0; i < number_of_writes; i++) {
-            // TODO: Add synchronization
-            write();
+            try {
+                shared_vars.startWrite();
+                write();
+                shared_vars.endWrite();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         this.completion_time = System.currentTimeMillis() / 1000.0 - this.start_time;

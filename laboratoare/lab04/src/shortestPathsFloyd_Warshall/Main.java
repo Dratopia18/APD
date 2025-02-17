@@ -10,17 +10,27 @@ public class Main {
                 {M, M, 1, 0, M},
                 {M, M, 1, M, 0}};
 
-        // Parallelize me (You might want to keep the original code in order to compare)
-        for (int k = 0; k < 5; k++) {
-            for (int i = 0; i < 5; i++) {
-                for (int j = 0; j < 5; j++) {
-                    graph[i][j] = Math.min(graph[i][k] + graph[k][j], graph[i][j]);
+        int numThreads = 4;
+        int N = graph.length;
+        Thread[] threads = new Thread[numThreads];
+
+        for (int k = 0; k < N; k++) {
+            for (int t = 0; t < numThreads; t++) {
+                threads[t] = new FWThread(graph, t, N, numThreads, k);
+                threads[t].start();
+            }
+
+            for (int t = 0; t < numThreads; t++) {
+                try {
+                    threads[t].join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
             }
         }
 
-        for (int i = 0; i < 5; i++) {
-            for (int j = 0; j < 5; j++) {
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
                 System.out.print(graph[i][j] + " ");
             }
             System.out.println();
